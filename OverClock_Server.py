@@ -9,10 +9,17 @@ import serial
 import time
 
 CMD_OP = 0xFF
-CMD_CLEAR = 0x0A
-CMD_BACKLIGHT_OFF = 0xB
-CMD_BACKLIGHT_ON = 0xC
-CMD_SET_CURSOR = 0xD
+CMD_CLEAR = 0x01
+CMD_BACKLIGHT_OFF = 0x2
+CMD_BACKLIGHT_ON = 0x3
+CMD_SET_CURSOR = 0x4
+
+
+# High level op codes
+CMD_CLOCK_START = 0x11
+CMD_CLOCK_END = 0x12
+CMD_INFO_A_START = 0x13
+CMD_INFO_A_END = 0x14
 
 
 class LCDLine(object):
@@ -34,7 +41,14 @@ class LCD(object):
 
         time.sleep(1)
         
-        
+    
+    def update_info_line(line_name, text):
+        lcd.write(chr(CMD_OP));
+        lcd.write(chr(CMD_INFO_A_START));
+        lcd.write(text)
+        lcd.write(chr(CMD_INFO_A_END))
+    
+    
 
     def write(self,str):
         self.ser.write(str)
@@ -115,7 +129,7 @@ class LCDServer(object):
             
 
 if __name__ == '__main__':
-    lcd = LCD('\\.\COM6')
+    lcd = LCD('\\.\COM4')
     srv = LCDServer(lcd)
     srv.main_loop()
     
@@ -123,16 +137,9 @@ if __name__ == '__main__':
     #raw_input("Press Enter to continue...")
     #lcd.clear()
     #raw_input("Press Enter to continue...")
-    #lcd.write("Crap");
+    #lcd.update_info_line("TESTING INFO")
     #raw_input("Press Enter to continue...")
-    #lcd.set_cursor(0,0)
-    #lcd.write("De La");
-    #
+    #lcd.update_info_line("SHORT")
     #raw_input("Press Enter to continue...")
-    #lcd.write("De La");
-    #raw_input("Press Enter to continue...")
-    #lcd.clear()
-    #raw_input("Press Enter to continue...")
-    #lcd.write("Crap");
-    #raw_input("Press Enter to continue...")
+    #lcd.update_info_line("Longer Longer")
 
